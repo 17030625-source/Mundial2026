@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quiniela Mundial 2026</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<header>
+
+<div class="logo-area">
+<div class="cup">🏆</div>
+
+<div>
+<h1>QUINIELA MUNDIAL <span>2026</span></h1>
+<p>CARRERA POR EL CAMPEONATO</p>
+</div>
+</div>
+
+<div class="upload-card">
+
+<input type="file" id="excelFile" accept=".xlsx">
+
+<div class="played">
+
+<div id="playedValue">0 / 0</div>
+
+<div id="playedPercent">0%</div>
+
+</div>
+
+</div>
+
+</header>
+
+<div class="main-grid">
+
+<div class="ranking-card">
+
+<h2>🏆 RANKING GENERAL</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>POS</th>
+<th>PARTICIPANTE</th>
+<th>PUNTOS</th>
+<th>EXACTOS</th>
+<th>ACIERTOS</th>
+</tr>
+</thead>
+
+<tbody id="rankingBody"></tbody>
+
+</table>
+
+</div>
+
+<div class="chart-card">
+
+<h2>📈 CARRERA POR EL CAMPEONATO</h2>
+
+<div class="chart-wrapper">
+<canvas id="raceChart"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<div class="matches-card">
+
+<h2>⚽ PARTIDOS</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Fecha</th>
+<th>Hora</th>
+<th>Local</th>
+<th>Visitante</th>
+<th>Resultado</th>
+</tr>
+
+</thead>
+
+<tbody id="matchesBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
