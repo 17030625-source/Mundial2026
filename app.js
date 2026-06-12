@@ -1,433 +1,385 @@
-let raceChart = null;
+/* =========================
+   CONFIGURACIÓN
+========================= */
 
-document
-.getElementById("excelFile")
-.addEventListener(
-"change",
-loadExcel
-);
+const SHEET_ID = "1kSROYgfS696IbbXCSglfe9JqfzrE1CeCuPvJeWIwiMY";
+const GID_GROUPS = "2016873157";
+const GID_POINTS = "71021384";
 
-function loadExcel(event){
-
-const file =
-event.target.files[0];
-
-if(!file) return;
-
-const reader =
-new FileReader();
-
-reader.onload = function(e){
-
-const workbook =
-XLSX.read(
-e.target.result,
-{
-type:"binary"
-}
-);
-
-const sheet =
-workbook.Sheets[
-workbook.SheetNames[0]
-];
-
-const rows =
-XLSX.utils.sheet_to_json(
-sheet,
-{
-header:1,
-defval:""
-}
-);
-
-processData(rows);
-
+const PLAYER_PHOTOS = {
+    Ivan:   "https://drive.google.com/file/d/1fdAq7ecDmKsRa-VSznkXTIKdos19mgwz/view?usp=sharing",
+    Brayan: "https://drive.google.com/file/d/1aUbhzMrX4wKN2Hd40kEd-I2RYc-mkZrS/view?usp=sharing",
+    Jetzuz: "https://drive.google.com/file/d/1YqbEFNSecj5ThHuTGFLi-OpE5lBK5Ij-/view?usp=sharing",
+    Yantoa: "https://drive.google.com/file/d/1MoYAawmK0PuwbhmAawVaPZgAJ-aP5sKF/view?usp=sharing",
+    Tellez: "https://drive.google.com/file/d/1GvTCNy7rsVrFEKMmsohisYZd54WkZndz/view?usp=sharing",
+    Tapia:  "https://drive.google.com/file/d/1kFmhFl1ecAXKCMNeF8YqQREMUw0hE6Jp/view?usp=sharing",
+    Dante:  "https://drive.google.com/file/d/10cnjUNR8mdvIk3r5h7a2Moy-_OzHhXvW/view?usp=sharing",
+    Dani:   "https://drive.google.com/file/d/1q0pUz6MwBt4NQ2S8pS-UMo9DoXDRPg4S/view?usp=sharing",
+    Javis:  "https://drive.google.com/file/d/1wCbU_Urhsje3oJCjgIXUFxCRtqkqZlLl/view?usp=sharing",
+    Pancho: "https://drive.google.com/file/d/138tUz0X7D8K6tMgJ2ELaPbehg8IuMCvz/view?usp=sharing",
+    Alan:   "https://drive.google.com/file/d/1ZODKijW7orzLleRUErAJgEzeETZ-8ccR/view?usp=sharing"
 };
 
-reader.readAsBinaryString(file);
+/* =========================
+   VARIABLES GLOBALES
+========================= */
 
+let participants = [];
+let matches = [];
+let currentPlayerIndex = 0;
+
+/* =========================
+   UTILIDAD: CONVERTIR URL DE DRIVE
+========================= */
+
+function getDrivePhoto(url){
+    if(!url) return "";
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if(!match) return url;
+    return `https://lh3.googleusercontent.com/d/${match[1]}`;
 }
 
-function processData(rows){
+/* =========================
+   UTILIDAD: PARSEAR CSV
+========================= */
 
-const participants =
-getParticipants(rows);
-
-const ranking =
-calculateRanking(
-rows,
-participants
-);
-
-renderRanking(ranking);
-
-renderMatches(rows);
-
-renderProgress(rows);
-
-renderRaceChart(
-rows,
-participants
-);
-
+function parseCSV(text){
+    const lines = text.trim().split("\n");
+    const headers = splitCSVLine(lines[0]);
+    return lines.slice(1).map(line => {
+        const cols = splitCSVLine(line);
+        const obj = {};
+        headers.forEach((h, i) => {
+            obj[h] = (cols[i] || "").trim();
+        });
+        return obj;
+    });
 }
 
-function getParticipants(rows){
-
-const participants=[];
-
-for(
-let col=6;
-col<rows[0].length;
-col+=2
-){
-
-const name =
-String(
-rows[0][col]||""
-).trim();
-
-if(name){
-
-participants.push({
-name,
-local:col,
-visitor:col+1
-});
-
+function splitCSVLine(line){
+    const cols = [];
+    let current = "";
+    let inQuotes = false;
+    for(let ch of line){
+        if(ch === '"') inQuotes = !inQuotes;
+        else if(ch === ',' && !inQuotes){ cols.push(current.trim()); current = ""; }
+        else current += ch;
+    }
+    cols.push(current.trim());
+    return cols;
 }
 
+/* =========================
+   INICIO
+========================= */
+
+loadGoogleSheet();
+setTimeout(() => loadGoogleSheet(), 30000);
+
+/* =========================
+   CARGAR SHEETS VÍA CSV
+========================= */
+
+async function loadGoogleSheet(){
+
+    try{
+
+        const csvURL = (gid) =>
+            `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+
+        const [groupsRes, pointsRes] = await Promise.all([
+            fetch(csvURL(GID_GROUPS)),
+            fetch(csvURL(GID_POINTS))
+        ]);
+
+        const groupsText = await groupsRes.text();
+        const pointsText = await pointsRes.text();
+
+        // Fila 0: decorativa "Quiniela 2026..." → ignorar
+        // Fila 1: headers reales → Fecha, EquipoLocal, ResultadoLocal, IvanLocal...
+        // Fila 2+: partidos
+        const allLines = groupsText.trim().split("\n");
+        const csvDesdeHeaders = allLines.slice(1).join("\n");
+
+        matches = parseCSV(csvDesdeHeaders);
+        const points = parseCSV(pointsText);
+
+        buildParticipants();
+        renderRanking(points);
+        renderPlayer();
+        setupButtons();
+
+    }
+    catch(error){
+        console.error("Error cargando sheet:", error);
+    }
 }
 
-return participants;
+/* =========================
+   PARTICIPANTES
+========================= */
 
+function buildParticipants(){
+    participants = Object.keys(PLAYER_PHOTOS);
 }
 
-function calculateRanking(
-rows,
-participants
-){
+/* =========================
+   RANKING
+========================= */
 
-const ranking =
-participants.map(
-p=>({
-name:p.name,
-points:0,
-exacts:0,
-hits:0
-})
-);
+function renderRanking(points){
 
-for(
-let row=2;
-row<rows.length;
-row++
-){
+    const tbody = document.getElementById("rankingBody");
+    tbody.innerHTML = "";
 
-const rl =
-Number(rows[row][4]);
+    const ranking = points
+        .map(row => ({
+            name:  row.Participante,
+            total: Number(row["Total\n(Fase 1)"] || row["Total"] || 0)
+        }))
+        .filter(p => p.name)
+        .sort((a,b) => b.total - a.total);
 
-const rv =
-Number(rows[row][5]);
+    ranking.forEach((player, index) => {
 
-if(
-isNaN(rl) ||
-isNaN(rv)
-){
-continue;
+        const tr = document.createElement("tr");
+        const position = index + 1;
+
+        let cssClass = "";
+        if(position === 1) cssClass = "gold";
+        if(position === 2) cssClass = "silver";
+        if(position === 3) cssClass = "bronze";
+
+        tr.innerHTML = `
+            <td class="${cssClass}">${position}</td>
+            <td>${player.name}</td>
+            <td>${player.total}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
 }
 
-participants.forEach(
-(participant,index)=>{
+/* =========================
+   BOTONES
+========================= */
 
-const pl =
-Number(
-rows[row][participant.local]
-);
+function setupButtons(){
 
-const pv =
-Number(
-rows[row][participant.visitor]
-);
+    document.getElementById("prevBtn").onclick = () => {
+        currentPlayerIndex--;
+        if(currentPlayerIndex < 0) currentPlayerIndex = participants.length - 1;
+        renderPlayer();
+    };
 
-if(
-isNaN(pl) ||
-isNaN(pv)
-){
-return;
+    document.getElementById("nextBtn").onclick = () => {
+        currentPlayerIndex++;
+        if(currentPlayerIndex >= participants.length) currentPlayerIndex = 0;
+        renderPlayer();
+    };
 }
 
-const real =
-Math.sign(
-rl-rv
-);
+/* =========================
+   PARTICIPANTE ACTUAL
+========================= */
 
-const pred =
-Math.sign(
-pl-pv
-);
+function renderPlayer(){
 
-if(real===pred){
+    const player = participants[currentPlayerIndex];
 
-ranking[index].points++;
+    document.getElementById("playerName").textContent = player;
 
-ranking[index].hits++;
+    const photoURL = getDrivePhoto(PLAYER_PHOTOS[player] || "");
+    const img = document.getElementById("playerPhoto");
+    img.src = photoURL;
+    img.onerror = () => { img.src = ""; img.alt = player; };
 
+    renderPredictions(player);
 }
 
-if(
-rl===pl &&
-rv===pv
-){
+/* =========================
+   TABLA PRONÓSTICOS
+========================= */
 
-ranking[index].points+=3;
+function renderPredictions(player){
 
-ranking[index].exacts++;
+    const tbody = document.getElementById("predictionBody");
+    tbody.innerHTML = "";
 
+    matches.forEach(row => {
+
+        const local = row.EquipoLocal;
+        const visit = row.EquipoVisitante;
+
+        const realLocal  = Number(row.ResultadoLocal);
+        const realVisit  = Number(row.ResultadoVisitante);
+        const predLocal  = Number(row[`${player}Local`]);
+        const predVisit  = Number(row[`${player}Visitante`]);
+
+        const status = getStatus(
+            row.ResultadoLocal,
+            row.ResultadoVisitante,
+            realLocal,
+            realVisit,
+            predLocal,
+            predVisit
+        );
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${local} vs ${visit}</td>
+            <td>${row.ResultadoLocal === "" ? "-" : realLocal} - ${row.ResultadoVisitante === "" ? "-" : realVisit}</td>
+            <td>${isNaN(predLocal) ? "-" : predLocal} - ${isNaN(predVisit) ? "-" : predVisit}</td>
+            <td class="${status.class}">${status.icon}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
 }
 
-});
+/* =========================
+   TRANSICION
+========================= */
 
+function setupButtons(){
+
+    document.getElementById("prevBtn").onclick = () => {
+        currentPlayerIndex--;
+        if(currentPlayerIndex < 0) currentPlayerIndex = participants.length - 1;
+        transitionPlayer();
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        currentPlayerIndex++;
+        if(currentPlayerIndex >= participants.length) currentPlayerIndex = 0;
+        transitionPlayer();
+    };
 }
 
-ranking.sort(
-(a,b)=>
-b.points-a.points
-);
+function transitionPlayer(){
 
-return ranking;
+    const photo  = document.getElementById("playerPhoto");
+    const name   = document.getElementById("playerName");
+    const loader = document.getElementById("ballLoader");
 
+    photo.style.opacity   = "0";
+    photo.style.transform = "scale(0.85)";
+
+    name.style.opacity   = "0";
+    name.style.transform = "translateY(8px)";
+
+    loader.classList.add("active");
+
+    setTimeout(() => {
+
+        renderPlayer();
+
+        const img = document.getElementById("playerPhoto");
+
+        const mostrar = () => {
+            loader.classList.remove("active");
+            img.style.opacity   = "1";
+            img.style.transform = "scale(1)";
+            name.style.opacity   = "1";
+            name.style.transform = "translateY(0)";
+        };
+
+        if(img.complete){
+            mostrar();
+        } else {
+            img.onload  = mostrar;
+            img.onerror = mostrar;
+        }
+
+    }, 350);
 }
 
-function renderRanking(ranking){
 
-const tbody =
-document.getElementById(
-"rankingBody"
-);
+/* =========================
+   INTRO + MÚSICA
+========================= */
 
-tbody.innerHTML="";
+(function(){
 
-ranking.forEach(
-(player,index)=>{
+    const intro    = document.getElementById("intro");
+    const music    = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+    let   playing  = false;
 
-const tr =
-document.createElement("tr");
+    function cerrarIntro(){
 
-if(index===0){
-tr.classList.add(
-"position1"
-);
-}
+        // Efecto explosión en la imagen
+        intro.classList.add("explode");
 
-tr.innerHTML=`
-<td>${index+1}</td>
-<td>${player.name}</td>
-<td>${player.points}</td>
-<td>${player.exacts}</td>
-<td>${player.hits}</td>
-`;
+        // Después del efecto, fade out del overlay completo
+        setTimeout(() => {
+            intro.classList.add("hidden");
+        }, 700);
 
-tbody.appendChild(tr);
+        // Intentar reproducir música
+        music.volume = 0.3;
+        music.play()
+            .then(() => {
+                playing = true;
+                musicBtn.textContent = "🔊";
+                musicBtn.classList.add("playing");
+            })
+            .catch(() => {
+                // Bloqueado por el navegador — el usuario usa el botón
+            });
+    }
 
-});
+    // Auto-cerrar a los 5 segundos
+    const autoClose = setTimeout(cerrarIntro, 5000);
 
-}
+    // Cerrar si toca la pantalla antes
+    intro.addEventListener("click", () => {
+        clearTimeout(autoClose);
+        cerrarIntro();
+    });
 
-function renderMatches(rows){
+    // Botón música
+    musicBtn.addEventListener("click", () => {
 
-const tbody =
-document.getElementById(
-"matchesBody"
-);
+        if(playing){
+            music.pause();
+            playing = false;
+            musicBtn.textContent = "🔇";
+            musicBtn.classList.remove("playing");
+        } else {
+            music.volume = 0.3;
+            music.play();
+            playing = true;
+            musicBtn.textContent = "🔊";
+            musicBtn.classList.add("playing");
+        }
+    });
 
-tbody.innerHTML="";
+})();
 
-for(
-let i=2;
-i<rows.length;
-i++
-){
 
-const tr =
-document.createElement("tr");
 
-tr.innerHTML=`
-<td>${rows[i][0]}</td>
-<td>${rows[i][1]}</td>
-<td>${rows[i][2]}</td>
-<td>${rows[i][3]}</td>
-<td>${rows[i][4] ?? "-"} - ${rows[i][5] ?? "-"}</td>
-`;
+/* =========================
+   ESTADO
+========================= */
 
-tbody.appendChild(tr);
+function getStatus(rawLocal, rawVisit, realLocal, realVisit, predLocal, predVisit){
 
-}
+    if(rawLocal === "" || rawVisit === ""){
+        return { icon:"⏳", class:"" };
+    }
 
-}
+    if(realLocal === predLocal && realVisit === predVisit){
+        return { icon:"✅", class:"exact" };
+    }
 
-function renderProgress(rows){
+    const realWinner = realLocal > realVisit ? "L" : realVisit > realLocal ? "V" : "E";
+    const predWinner = predLocal > predVisit ? "L" : predVisit > predLocal ? "V" : "E";
 
-const total =
-rows.length-2;
+    if(realWinner === predWinner){
+        return { icon:"🟡", class:"winner" };
+    }
 
-let played=0;
-
-for(
-let i=2;
-i<rows.length;
-i++
-){
-
-if(
-rows[i][4]!=="" &&
-rows[i][5]!==""
-){
-played++;
-}
-
-}
-
-const percent =
-(
-played/total
-*100
-).toFixed(1);
-
-document.getElementById(
-"playedValue"
-).textContent =
-`${played} / ${total}`;
-
-document.getElementById(
-"playedPercent"
-).textContent =
-`${percent}%`;
-
-}
-
-function renderRaceChart(
-rows,
-participants
-){
-
-const datasets=[];
-
-participants.forEach(
-participant=>{
-
-let total=0;
-
-const data=[];
-
-for(
-let row=2;
-row<rows.length;
-row++
-){
-
-const rl =
-Number(rows[row][4]);
-
-const rv =
-Number(rows[row][5]);
-
-if(
-isNaN(rl) ||
-isNaN(rv)
-){
-break;
-}
-
-const pl =
-Number(
-rows[row][participant.local]
-);
-
-const pv =
-Number(
-rows[row][participant.visitor]
-);
-
-if(
-!isNaN(pl) &&
-!isNaN(pv)
-){
-
-const real =
-Math.sign(
-rl-rv
-);
-
-const pred =
-Math.sign(
-pl-pv
-);
-
-if(real===pred){
-total+=1;
-}
-
-if(
-pl===rl &&
-pv===rv
-){
-total+=3;
-}
-
-}
-
-data.push(total);
-
-}
-
-datasets.push({
-label:participant.name,
-data:data,
-tension:.25
-});
-
-});
-
-const labels =
-Array.from(
-{
-length:
-Math.max(
-...datasets.map(
-d=>d.data.length
-)
-)
-},
-(_,i)=>i+1
-);
-
-if(raceChart){
-raceChart.destroy();
-}
-
-raceChart =
-new Chart(
-document.getElementById(
-"raceChart"
-),
-{
-type:"line",
-data:{
-labels,
-datasets
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-plugins:{
-legend:{
-position:"right"
-}
-}
-}
-}
-);
-
+    return { icon:"❌", class:"fail" };
 }
