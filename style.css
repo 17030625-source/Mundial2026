@@ -43,7 +43,7 @@ body::before {
 h1 {
     text-align: center;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(30px, 8vw, 52px);
+    font-size: clamp(38px, 10vw, 68px);
     letter-spacing: 3px;
     background: linear-gradient(135deg, #22c55e 0%, #facc15 40%, #22c55e 80%);
     background-size: 200% auto;
@@ -62,8 +62,8 @@ h1 {
 
 .subtitle {
     text-align: center;
-    font-size: 10px;
-    letter-spacing: 5px;
+    font-size: 13px;
+    letter-spacing: 6px;
     color: #334155;
     text-transform: uppercase;
     margin-bottom: 20px;
@@ -86,7 +86,6 @@ h1 {
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Línea top animada */
 .card::before {
     content: '';
     position: absolute;
@@ -105,7 +104,6 @@ h1 {
     animation: shimmer 4s linear infinite;
 }
 
-/* Brillo esquina */
 .card::after {
     content: '';
     position: absolute;
@@ -123,7 +121,7 @@ h1 {
 
 h2 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
+    font-size: 22px;
     letter-spacing: 3px;
     color: #facc15;
     margin-bottom: 14px;
@@ -141,9 +139,9 @@ table {
 
 th {
     background: rgba(5, 14, 26, 0.8);
-    padding: 9px 10px;
+    padding: 12px 8px;
     text-align: left;
-    font-size: 9px;
+    font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: #334155;
@@ -151,9 +149,9 @@ th {
 }
 
 td {
-    padding: 9px 10px;
+    padding: 14px 8px;
     border-bottom: 1px solid rgba(11, 30, 53, 0.8);
-    font-size: 12px;
+    font-size: 16px;
     transition: background 0.2s;
 }
 
@@ -170,8 +168,8 @@ tr:hover td {
     background: rgba(5, 14, 26, 0.9);
     border: 1px solid rgba(30, 58, 95, 0.8);
     border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 11px;
+    padding: 4px 10px;
+    font-size: 15px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     display: inline-block;
@@ -195,9 +193,9 @@ tr:hover td {
 }
 
 /* ── ESTADOS PRONÓSTICO ── */
-.exact  { color: #22c55e; font-weight: 700; text-shadow: 0 0 8px rgba(34, 197, 94, 0.8); }
-.winner { color: #facc15; font-weight: 700; text-shadow: 0 0 8px rgba(250, 204, 21, 0.8); }
-.fail   { color: #ef4444; font-weight: 700; text-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
+.exact  { color: #22c55e; font-weight: 700; font-size: 18px; text-shadow: 0 0 8px rgba(34, 197, 94, 0.8); }
+.winner { color: #facc15; font-weight: 700; font-size: 18px; text-shadow: 0 0 8px rgba(250, 204, 21, 0.8); }
+.fail   { color: #ef4444; font-weight: 700; font-size: 18px; text-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
 
 /* ── PLAYER CARD ── */
 .player-card {
@@ -216,41 +214,35 @@ tr:hover td {
 
 .player-photo-wrap {
     position: relative;
-    min-height: 160px;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-bottom: 12px;
+    padding: 4px;
 }
 
-/* Anillo neon alrededor de la foto */
+/* ── ANILLO NEON ── */
 .player-photo-wrap::before {
     content: '';
     position: absolute;
-    inset: -4px;
+    inset: 0;
     border-radius: 18px;
     background: linear-gradient(135deg, #22c55e, #facc15, #22c55e);
     background-size: 200% 200%;
     animation: neonRing 3s linear infinite;
     opacity: 0.6;
     z-index: 0;
-    width: calc(100% + 8px);
-    height: calc(100% + 8px);
-    top: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 168px;
 }
 
 @keyframes neonRing {
-    0%   { background-position: 0% 50%;   filter: hue-rotate(0deg);   }
-    50%  { background-position: 100% 50%; filter: hue-rotate(30deg);  }
-    100% { background-position: 0% 50%;   filter: hue-rotate(0deg);   }
+    0%   { background-position: 0% 50%;   filter: hue-rotate(0deg);  }
+    50%  { background-position: 100% 50%; filter: hue-rotate(30deg); }
+    100% { background-position: 0% 50%;   filter: hue-rotate(0deg);  }
 }
 
 .player-photo {
-    width: 140px;
+    width: 440px;
     height: auto;
     border-radius: 14px;
     border: 3px solid #22c55e;
@@ -265,7 +257,7 @@ tr:hover td {
 
 #playerName {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
+    font-size: 40px;
     letter-spacing: 4px;
     color: #facc15;
     text-transform: uppercase;
@@ -275,7 +267,7 @@ tr:hover td {
 
 .player-stars {
     color: #facc15;
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: 5px;
     margin-top: 4px;
     opacity: 0.7;
@@ -289,6 +281,8 @@ tr:hover td {
     position: absolute;
     inset: 0;
     z-index: 2;
+    border-radius: 14px;
+    background: rgba(2, 8, 16, 0.85);
 }
 
 .ball-loader.active {
@@ -296,7 +290,7 @@ tr:hover td {
 }
 
 .ball {
-    font-size: 48px;
+    font-size: 56px;
     animation: roll 0.5s linear infinite;
     filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.8));
 }
@@ -309,7 +303,7 @@ tr:hover td {
     100% { transform: rotate(360deg) translateX(0);     }
 }
 
-/* ── BOTONES ── */
+/* ── BOTONES NAV ── */
 button {
     background: rgba(5, 14, 26, 0.9);
     border: 1.5px solid #22c55e;
@@ -343,64 +337,6 @@ button:hover {
 button:active {
     transform: scale(0.94);
     box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
-}
-
-/* ── POSTER ── */
-.poster-img {
-    width: 100%;
-    max-width: 320px;
-    display: block;
-    margin: 0 auto 20px;
-    border-radius: 16px;
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    box-shadow:
-        0 0 30px rgba(34, 197, 94, 0.1),
-        0 20px 60px rgba(0, 0, 0, 0.6);
-}
-
-/* ── RESPONSIVE MOBILE ── */
-@media (max-width: 480px) {
-
-    body { padding: 12px; }
-
-    h1 { font-size: clamp(26px, 7vw, 36px); letter-spacing: 2px; }
-
-    .card { padding: 14px; border-radius: 16px; margin-bottom: 12px; }
-
-    h2 { font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; }
-
-    th { font-size: 8px; padding: 8px 6px; letter-spacing: 1px; }
-
-    td { font-size: 11px; padding: 8px 6px; }
-
-    .score-badge { font-size: 10px; padding: 2px 6px; }
-
-    .player-photo { width: 110px; }
-
-    .player-photo-wrap { min-height: 130px; }
-
-    .player-photo-wrap::before { max-width: 118px; }
-
-    #playerName { font-size: 20px; letter-spacing: 3px; }
-
-    button { width: 40px; height: 40px; min-width: 40px; font-size: 14px; }
-
-    .ball { font-size: 38px; }
-
-    .player-card { gap: 12px; }
-
-    .poster-img { max-width: 280px; border-radius: 12px; }
-}
-
-@media (max-width: 360px) {
-
-    td { font-size: 10px; padding: 7px 5px; }
-
-    .player-photo { width: 90px; }
-
-    .player-photo-wrap::before { max-width: 98px; }
-
-    button { width: 36px; height: 36px; min-width: 36px; }
 }
 
 /* ── INTRO ── */
@@ -494,7 +430,7 @@ button:active {
     background-size: 200% 100%;
     border-radius: 3px;
     animation:
-        barLoad 4.2s linear 0.3s forwards,
+        barLoad 2.7s linear 0.3s forwards,
         barShine 1.5s linear infinite;
     box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
 }
@@ -510,7 +446,7 @@ button:active {
 }
 
 .intro-tap {
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: #334155;
@@ -527,11 +463,11 @@ button:active {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 48px !important;
-    height: 48px !important;
-    min-width: 48px !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
     border-radius: 50% !important;
-    font-size: 20px !important;
+    font-size: 22px !important;
     z-index: 1000;
     background: rgba(11, 30, 53, 0.9) !important;
     border: 1.5px solid rgba(34, 197, 94, 0.4) !important;
@@ -560,4 +496,128 @@ button:active {
 @keyframes musicPulse {
     0%, 100% { box-shadow: 0 0 16px rgba(34,197,94,0.3), 0 4px 20px rgba(0,0,0,0.4); }
     50%       { box-shadow: 0 0 32px rgba(34,197,94,0.7), 0 4px 20px rgba(0,0,0,0.4); }
+}
+
+/* ── RESPONSIVE DESKTOP ── */
+@media (min-width: 900px) {
+
+    body { padding: 32px 20px; }
+
+    .container { max-width: 860px; }
+
+    h1 { font-size: 68px; letter-spacing: 5px; }
+
+    .subtitle { font-size: 14px; letter-spacing: 7px; margin-bottom: 28px; }
+
+    .card { padding: 28px 32px; border-radius: 24px; margin-bottom: 24px; }
+
+    h2 { font-size: 24px; letter-spacing: 4px; margin-bottom: 20px; }
+
+    th { font-size: 13px; padding: 13px 16px; letter-spacing: 2px; }
+
+    td { font-size: 16px; padding: 13px 16px; }
+
+    .score-badge { font-size: 15px; padding: 4px 14px; border-radius: 8px; }
+
+    .player-photo { width: 560px; }
+
+    #playerName { font-size: 42px; letter-spacing: 6px; }
+
+    .player-stars { font-size: 14px; letter-spacing: 6px; margin-top: 8px; }
+
+    .player-card { gap: 40px; }
+
+    button {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        font-size: 22px;
+    }
+
+    .ball { font-size: 72px; }
+
+    .exact, .winner, .fail { font-size: 20px; }
+}
+
+/* ── RESPONSIVE TABLET ── */
+@media (min-width: 600px) and (max-width: 899px) {
+
+    body { padding: 24px 20px; }
+
+    .container { max-width: 680px; }
+
+    h1 { font-size: 52px; }
+
+    .subtitle { font-size: 13px; }
+
+    .card { padding: 22px 26px; }
+
+    h2 { font-size: 20px; }
+
+    th { font-size: 12px; padding: 11px 14px; }
+
+    td { font-size: 15px; padding: 12px 14px; }
+
+    .score-badge { font-size: 14px; padding: 3px 12px; }
+
+    .player-photo { width: 360px; }
+
+    #playerName { font-size: 34px; }
+
+    button {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        font-size: 20px;
+    }
+
+    .ball { font-size: 52px; }
+
+    .exact, .winner, .fail { font-size: 18px; }
+}
+
+/* ── RESPONSIVE MOBILE ── */
+@media (max-width: 599px) {
+
+    body { padding: 12px; }
+
+    h1 { font-size: clamp(36px, 9vw, 48px); letter-spacing: 2px; }
+
+    .card { padding: 16px; border-radius: 16px; margin-bottom: 12px; }
+
+    h2 { font-size: 20px; letter-spacing: 2px; margin-bottom: 14px; }
+
+    th { font-size: 13px; padding: 10px 8px; letter-spacing: 1px; }
+
+    td { font-size: 15px; padding: 12px 8px; }
+
+    .score-badge { font-size: 14px; padding: 3px 8px; }
+
+    .player-photo { width: 280px; }
+
+    #playerName { font-size: 32px; letter-spacing: 3px; }
+
+    button { width: 44px; height: 44px; min-width: 44px; font-size: 18px; }
+
+    .ball { font-size: 44px; }
+
+    .player-card { gap: 14px; }
+
+    .exact, .winner, .fail { font-size: 16px; }
+}
+
+/* ── RESPONSIVE MOBILE PEQUEÑO ── */
+@media (max-width: 360px) {
+
+    td { font-size: 13px; padding: 10px 6px; }
+
+    th { font-size: 11px; padding: 9px 6px; }
+
+    .score-badge { font-size: 12px; }
+
+    .player-photo { width: 220px; }
+
+    button { width: 40px; height: 40px; min-width: 40px; }
+
+    #playerName { font-size: 26px; }
 }
