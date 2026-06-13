@@ -632,11 +632,6 @@ button:active {
         width: 100%;
     }
 
-    /* Ocultar flechas laterales en mobile */
-    #prevBtn,
-    #nextBtn {
-        display: none;
-    }
 
     button { font-size: 18px; }
 }
