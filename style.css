@@ -198,18 +198,9 @@ tr:hover td {
 .fail   { color: #ef4444; font-weight: 700; font-size: 18px; text-shadow: 0 0 8px rgba(239, 68, 68, 0.8); }
 
 /* ── PLAYER CARD ── */
-.player-card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    padding: 4px 0;
-}
-
 .player-info {
     text-align: center;
-    flex: 1;
-    min-width: 0;
+    width: 100%;
 }
 
 .player-photo-wrap {
@@ -218,11 +209,10 @@ tr:hover td {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     padding: 4px;
 }
 
-/* ── ANILLO NEON ── */
 .player-photo-wrap::before {
     content: '';
     position: absolute;
@@ -242,7 +232,8 @@ tr:hover td {
 }
 
 .player-photo {
-    width: 440px;
+    width: 100%;
+    max-width: 700px;
     height: auto;
     border-radius: 14px;
     border: 3px solid #22c55e;
@@ -265,14 +256,25 @@ tr:hover td {
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+.player-name-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+
 .player-stars {
     color: #facc15;
     font-size: 12px;
     letter-spacing: 5px;
-    margin-top: 4px;
+    margin-bottom: 16px;
     opacity: 0.7;
 }
 
+.player-controls {
+    display: none;
+}
 /* ── LOADER BALÓN ── */
 .ball-loader {
     display: none;
@@ -576,6 +578,12 @@ button:active {
     .exact, .winner, .fail { font-size: 18px; }
 }
 
+/* Ranking */
+
+.trend-up   { color: #22c55e; font-weight: 700; font-size: 13px; text-shadow: 0 0 8px rgba(34,197,94,0.8); }
+.trend-down { color: #ef4444; font-weight: 700; font-size: 13px; text-shadow: 0 0 8px rgba(239,68,68,0.8); }
+.trend-same { color: #475569; font-size: 13px; }
+
 /* ── RESPONSIVE MOBILE ── */
 @media (max-width: 599px) {
 
@@ -602,7 +610,7 @@ button:active {
 
     .score-badge { font-size: 13px; padding: 3px 6px; }
 
-    .player-photo { width: 260px; }
+    .player-photo { width: 100%; max-width: 100%; }
 
     #playerName { font-size: 30px; letter-spacing: 3px; }
 

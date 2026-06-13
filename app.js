@@ -128,32 +128,53 @@ function buildParticipants(){
 ========================= */
 
 function renderRanking(points){
-
+ 
     const tbody = document.getElementById("rankingBody");
     tbody.innerHTML = "";
 
     const ranking = points
         .map(row => ({
-            name:  row.Participante,
-            total: Number(row["Total\n(Fase 1)"] || row["Total"] || 0)
+            name:      row.Participante,
+            total:     Number(row["Total"] || 0),
+            prevTotal: Number(row["TotalPrevio"] || 0)
         }))
         .filter(p => p.name)
         .sort((a,b) => b.total - a.total);
 
+    // Calcular ranking previo basado en TotalPrevio
+    const prevRanking = [...ranking]
+        .sort((a,b) => b.prevTotal - a.prevTotal)
+        .map((p, i) => ({ name: p.name, pos: i + 1 }));
+
+    const prevPosMap = {};
+    prevRanking.forEach(p => prevPosMap[p.name] = p.pos);
+
     ranking.forEach((player, index) => {
 
-        const tr = document.createElement("tr");
+        const tr       = document.createElement("tr");
         const position = index + 1;
+        const prevPos  = prevPosMap[player.name] || position;
+        const diff     = prevPos - position;
 
         let cssClass = "";
         if(position === 1) cssClass = "gold";
         if(position === 2) cssClass = "silver";
         if(position === 3) cssClass = "bronze";
 
+        let trendHTML = "";
+        if(diff > 0){
+            trendHTML = `<span class="trend-up">▲${diff}</span>`;
+        } else if(diff < 0){
+            trendHTML = `<span class="trend-down">▼${Math.abs(diff)}</span>`;
+        } else {
+            trendHTML = `<span class="trend-same">—</span>`;
+        }
+
         tr.innerHTML = `
             <td class="${cssClass}">${position}</td>
             <td>${player.name}</td>
             <td>${player.total}</td>
+            <td>${trendHTML}</td>
         `;
 
         tbody.appendChild(tr);
@@ -169,13 +190,13 @@ function setupButtons(){
     document.getElementById("prevBtn").onclick = () => {
         currentPlayerIndex--;
         if(currentPlayerIndex < 0) currentPlayerIndex = participants.length - 1;
-        renderPlayer();
+        transitionPlayer();
     };
 
     document.getElementById("nextBtn").onclick = () => {
         currentPlayerIndex++;
         if(currentPlayerIndex >= participants.length) currentPlayerIndex = 0;
-        renderPlayer();
+        transitionPlayer();
     };
 }
 

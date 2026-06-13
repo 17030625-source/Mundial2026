@@ -41,6 +41,7 @@
                     <th>#</th>
                     <th>Participante</th>
                     <th>Puntos</th>
+                    <th>↕</th>
                 </tr>
             </thead>
             <tbody id="rankingBody"></tbody>
@@ -48,20 +49,22 @@
     </div>
 
     <!-- JUGADOR -->
-    <div class="card player-card">
-        <button id="prevBtn">◀</button>
-        <div class="player-info">
-            <div class="player-photo-wrap">
-                <div class="ball-loader" id="ballLoader">
-                    <span class="ball">⚽</span>
-                </div>
-                <img id="playerPhoto" class="player-photo" alt="Participante">
-            </div>
-            <div id="playerName"></div>
-            <div class="player-stars">★ ★ ★ ★ ★</div>
+<div class="player-info">
+    <div class="player-photo-wrap">
+        <div class="ball-loader" id="ballLoader">
+            <span class="ball">⚽</span>
         </div>
+        <img id="playerPhoto" class="player-photo" alt="Participante">
+    </div>
+
+    <div class="player-name-row">
+        <button id="prevBtn">◀</button>
+        <div id="playerName"></div>
         <button id="nextBtn">▶</button>
     </div>
+
+    <div class="player-stars">★ ★ ★ ★ ★</div>
+</div>
 
     <!-- PRONÓSTICOS -->
     <div class="card">
