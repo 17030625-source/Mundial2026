@@ -581,29 +581,56 @@ button:active {
 
     body { padding: 12px; }
 
-    h1 { font-size: clamp(36px, 9vw, 48px); letter-spacing: 2px; }
+    h1 {
+        font-size: clamp(22px, 6vw, 32px);
+        letter-spacing: 1px;
+    }
+
+    .subtitle {
+        font-size: 10px;
+        letter-spacing: 3px;
+        margin-bottom: 16px;
+    }
 
     .card { padding: 16px; border-radius: 16px; margin-bottom: 12px; }
 
-    h2 { font-size: 20px; letter-spacing: 2px; margin-bottom: 14px; }
+    h2 { font-size: 18px; letter-spacing: 2px; margin-bottom: 14px; }
 
-    th { font-size: 13px; padding: 10px 8px; letter-spacing: 1px; }
+    th { font-size: 12px; padding: 10px 6px; letter-spacing: 0px; }
 
-    td { font-size: 15px; padding: 12px 8px; }
+    td { font-size: 14px; padding: 11px 6px; }
 
-    .score-badge { font-size: 14px; padding: 3px 8px; }
+    .score-badge { font-size: 13px; padding: 3px 6px; }
 
-    .player-photo { width: 280px; }
+    .player-photo { width: 260px; }
 
-    #playerName { font-size: 32px; letter-spacing: 3px; }
-
-    button { width: 44px; height: 44px; min-width: 44px; font-size: 18px; }
+    #playerName { font-size: 30px; letter-spacing: 3px; }
 
     .ball { font-size: 44px; }
 
-    .player-card { gap: 14px; }
-
     .exact, .winner, .fail { font-size: 16px; }
+
+    /* Flechas debajo de la foto, junto al nombre */
+    .player-card {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .player-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        width: 100%;
+    }
+
+    /* Ocultar flechas laterales en mobile */
+    #prevBtn,
+    #nextBtn {
+        display: none;
+    }
+
+    button { font-size: 18px; }
 }
 
 /* ── RESPONSIVE MOBILE PEQUEÑO ── */
