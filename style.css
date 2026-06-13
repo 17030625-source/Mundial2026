@@ -618,27 +618,16 @@ button:active {
 
     .exact, .winner, .fail { font-size: 16px; }
 
-    /* Flechas debajo de la foto, junto al nombre */
-    .player-card {
-        flex-direction: column;
+    .player-name-row {
         gap: 12px;
     }
 
-    .player-controls {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 24px;
-        width: 100%;
+    button {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        font-size: 18px;
     }
-
-    /* Ocultar flechas laterales en mobile */
-    #prevBtn,
-    #nextBtn {
-        display: none;
-    }
-
-    button { font-size: 18px; }
 }
 
 /* ── RESPONSIVE MOBILE PEQUEÑO ── */
