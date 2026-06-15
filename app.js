@@ -108,11 +108,51 @@ async function loadGoogleSheet(){
         renderRanking(points);
         renderPlayer();
         setupButtons();
+        populateMatchSelect();  
+        setupMatchButtons();
+        renderMatchView();
 
     }
     catch(error){
         console.error("Error cargando sheet:", error);
     }
+}
+
+/* =========================
+   CALCULAR RACHAS
+========================= */
+
+function calcularRachas() {
+    const rachas = {};
+
+    participants.forEach(player => {
+        let racha = 0;
+
+        // Recorrer partidos de más reciente a más antiguo
+        for (let i = matches.length - 1; i >= 0; i--) {
+            const row = matches[i];
+            if (row.ResultadoLocal === "" || row.ResultadoVisitante === "") continue;
+
+            const realLocal  = Number(row.ResultadoLocal);
+            const realVisit  = Number(row.ResultadoVisitante);
+            const predLocal  = Number(row[`${player}Local`]);
+            const predVisit  = Number(row[`${player}Visitante`]);
+            const status     = getStatus(
+                row.ResultadoLocal, row.ResultadoVisitante,
+                realLocal, realVisit, predLocal, predVisit
+            );
+
+            if (status.icon === "✅" || status.icon === "🟡") {
+                racha++;
+            } else {
+                break; // racha cortada
+            }
+        }
+
+        rachas[player] = racha;
+    });
+
+    return rachas;
 }
 
 /* =========================
@@ -127,10 +167,12 @@ function buildParticipants(){
    RANKING
 ========================= */
 
-function renderRanking(points){
- 
+function renderRanking(points) {
+
     const tbody = document.getElementById("rankingBody");
     tbody.innerHTML = "";
+
+    const rachas = calcularRachas();
 
     const ranking = points
         .map(row => ({
@@ -139,11 +181,10 @@ function renderRanking(points){
             prevTotal: Number(row["TotalPrevio"] || 0)
         }))
         .filter(p => p.name)
-        .sort((a,b) => b.total - a.total);
+        .sort((a, b) => b.total - a.total);
 
-    // Calcular ranking previo basado en TotalPrevio
     const prevRanking = [...ranking]
-        .sort((a,b) => b.prevTotal - a.prevTotal)
+        .sort((a, b) => b.prevTotal - a.prevTotal)
         .map((p, i) => ({ name: p.name, pos: i + 1 }));
 
     const prevPosMap = {};
@@ -155,24 +196,26 @@ function renderRanking(points){
         const position = index + 1;
         const prevPos  = prevPosMap[player.name] || position;
         const diff     = prevPos - position;
+        const racha    = rachas[player.name] || 0;
 
         let cssClass = "";
-        if(position === 1) cssClass = "gold";
-        if(position === 2) cssClass = "silver";
-        if(position === 3) cssClass = "bronze";
+        if (position === 1) cssClass = "gold";
+        if (position === 2) cssClass = "silver";
+        if (position === 3) cssClass = "bronze";
 
         let trendHTML = "";
-        if(diff > 0){
-            trendHTML = `<span class="trend-up">▲${diff}</span>`;
-        } else if(diff < 0){
-            trendHTML = `<span class="trend-down">▼${Math.abs(diff)}</span>`;
-        } else {
-            trendHTML = `<span class="trend-same">—</span>`;
-        }
+        if (diff > 0)      trendHTML = `<span class="trend-up">▲${diff}</span>`;
+        else if (diff < 0) trendHTML = `<span class="trend-down">▼${Math.abs(diff)}</span>`;
+        else               trendHTML = `<span class="trend-same">—</span>`;
+
+        let rachaHTML = "";
+        if (racha >= 3)      rachaHTML = `<span class="racha-hot">🔥${racha}</span>`;
+        else if (racha >= 1) rachaHTML = `<span class="racha-ok">⚡${racha}</span>`;
+        else                 rachaHTML = `<span class="racha-cold">❄️</span>`;
 
         tr.innerHTML = `
             <td class="${cssClass}">${position}</td>
-            <td>${player.name}</td>
+            <td>${player.name} ${rachaHTML}</td>
             <td>${player.total}</td>
             <td>${trendHTML}</td>
         `;
@@ -199,6 +242,158 @@ function setupButtons(){
         transitionPlayer();
     };
 }
+
+/* =========================
+   VISTA POR PARTIDO
+========================= */
+
+let currentMatchIndex = 0;
+let matchAnimating = false;
+
+function populateMatchSelect() {
+    const select = document.getElementById("matchSelect");
+    select.innerHTML = "";
+    matches.forEach((row, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `${row.EquipoLocal} vs ${row.EquipoVisitante}`;
+        select.appendChild(opt);
+    });
+    select.addEventListener("change", () => {
+        if (matchAnimating) return;
+        const prev = currentMatchIndex;
+        currentMatchIndex = Number(select.value);
+        animateMatchTransition(currentMatchIndex > prev ? "right" : "left");
+    });
+}
+
+function setupMatchButtons() {
+    document.getElementById("prevMatchBtn").onclick = () => {
+        if (matchAnimating) return;
+        currentMatchIndex--;
+        if (currentMatchIndex < 0) currentMatchIndex = matches.length - 1;
+        document.getElementById("matchSelect").value = currentMatchIndex;
+        animateMatchTransition("left");
+    };
+    document.getElementById("nextMatchBtn").onclick = () => {
+        if (matchAnimating) return;
+        currentMatchIndex++;
+        if (currentMatchIndex >= matches.length) currentMatchIndex = 0;
+        document.getElementById("matchSelect").value = currentMatchIndex;
+        animateMatchTransition("right");
+    };
+}
+
+function animateMatchTransition(direction) {
+    matchAnimating = true;
+
+    const card     = document.getElementById("matchCard");
+    const label    = document.getElementById("matchLabel");
+    const tbody    = document.getElementById("matchBody");
+    const exitX    = direction === "right" ? "-60px" : "60px";
+    const enterX   = direction === "right" ? "60px"  : "-60px";
+
+    // Salida
+    card.style.transition  = "opacity 0.22s ease, transform 0.22s ease";
+    label.style.transition = "opacity 0.22s ease, transform 0.22s ease";
+    card.style.opacity     = "0";
+    card.style.transform   = `translateX(${exitX})`;
+    label.style.opacity    = "0";
+    label.style.transform  = `translateX(${exitX}) scale(0.92)`;
+
+    setTimeout(() => {
+        renderMatchView();
+
+        // Posición inicial antes de entrar
+        card.style.transition  = "none";
+        label.style.transition = "none";
+        card.style.transform   = `translateX(${enterX})`;
+        label.style.transform  = `translateX(${enterX}) scale(0.92)`;
+
+        
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+
+            // Entrada
+            card.style.transition  = "opacity 0.28s ease, transform 0.28s cubic-bezier(0.34,1.4,0.64,1)";
+            label.style.transition = "opacity 0.28s ease, transform 0.28s cubic-bezier(0.34,1.4,0.64,1)";
+            card.style.opacity     = "1";
+            card.style.transform   = "translateX(0)";
+            label.style.opacity    = "1";
+            label.style.transform  = "translateX(0) scale(1)";
+
+            // Animar filas en cascada
+            const rows = document.querySelectorAll("#matchBody tr");
+            rows.forEach((row, i) => {
+                row.style.opacity   = "0";
+                row.style.transform = "translateY(12px)";
+                row.style.transition = "none";
+                setTimeout(() => {
+                    row.style.transition = `opacity 0.22s ease ${i * 35}ms, transform 0.22s ease ${i * 35}ms`;
+                    row.style.opacity    = "1";
+                    row.style.transform  = "translateY(0)";
+                }, 60 + i * 35);
+            });
+
+            setTimeout(() => { matchAnimating = false; }, 400);
+        }));
+
+    }, 230);
+}
+
+function renderMatchView() {
+    if (!matches.length) return;
+
+    const row    = matches[currentMatchIndex];
+    const local  = row.EquipoLocal;
+    const visit  = row.EquipoVisitante;
+    const realLocal  = row.ResultadoLocal;
+    const realVisit  = row.ResultadoVisitante;
+    const total  = matches.length;
+
+    const sel = document.getElementById("matchSelect");
+        if (sel) sel.value = currentMatchIndex;
+
+    document.getElementById("matchLabel").textContent =
+        `${local} vs ${visit}`;
+
+    document.getElementById("matchCounter").textContent =
+        `Partido ${currentMatchIndex + 1} / ${total}`;
+
+    const tbody = document.getElementById("matchBody");
+    tbody.innerHTML = "";
+
+    participants.forEach(player => {
+        const predLocal  = Number(row[`${player}Local`]);
+        const predVisit  = Number(row[`${player}Visitante`]);
+        const status     = getStatus(
+            realLocal, realVisit,
+            Number(realLocal), Number(realVisit),
+            predLocal, predVisit
+        );
+
+        const predStr  = isNaN(predLocal)  ? "-" : `${predLocal}`;
+        const predStr2 = isNaN(predVisit)  ? "-" : `${predVisit}`;
+        const realStr  = realLocal  === "" ? "-" : `${realLocal}`;
+        const realStr2 = realVisit  === "" ? "-" : `${realVisit}`;
+
+        // Fondo sutil según resultado
+        let rowBg = "";
+        if      (status.icon === "✅") rowBg = "background: rgba(34,197,94,0.07);";
+        else if (status.icon === "🟡") rowBg = "background: rgba(250,204,21,0.05);";
+        else if (status.icon === "❌") rowBg = "background: rgba(239,68,68,0.04);";
+
+        const tr = document.createElement("tr");
+        tr.setAttribute("style", rowBg);
+        tr.innerHTML = `
+            <td style="font-weight:600">${player}</td>
+            <td><span class="score-badge">${predStr} - ${predStr2}</span></td>
+            <td><span class="score-badge">${realStr} - ${realStr2}</span></td>
+            <td class="${status.class}">${status.icon}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
 
 /* =========================
    PARTICIPANTE ACTUAL

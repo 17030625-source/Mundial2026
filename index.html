@@ -48,7 +48,7 @@
         </table>
     </div>
 
- <!-- JUGADOR -->
+    <!-- JUGADOR -->
     <div class="card">
         <div class="player-info">
             <div class="player-photo-wrap">
@@ -71,17 +71,52 @@
     <!-- PRONÓSTICOS -->
     <div class="card">
         <h2>📋 Pronósticos</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Partido</th>
-                    <th>Real</th>
-                    <th>Pronóstico</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-            <tbody id="predictionBody"></tbody>
-        </table>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Partido</th>
+                        <th>Real</th>
+                        <th>Pronóstico</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="predictionBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- VISTA POR PARTIDO -->
+    <div class="card">
+        <h2>🔍 Vista por Partido</h2>
+
+        <!-- Selector + flechas -->
+        <div class="match-nav">
+            <button id="prevMatchBtn">◀</button>
+            <select id="matchSelect"></select>
+            <button id="nextMatchBtn">▶</button>
+        </div>
+
+        <!-- Contador -->
+        <div id="matchCounter" class="match-counter"></div>
+
+        <!-- Nombre del partido -->
+        <div id="matchLabel" class="match-label"></div>
+        
+        <!-- Tabla animada -->
+        <div id="matchCard">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Pronóstico</th>
+                        <th>Real</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="matchBody"></tbody>
+            </table>
+        </div>
     </div>
 
 </div>

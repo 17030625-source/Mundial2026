@@ -163,6 +163,37 @@ tr:hover td {
     background: rgba(34, 197, 94, 0.04);
 }
 
+/* ── SCROLL PRONÓSTICOS ── */
+.table-scroll {
+    max-height: 420px;
+    overflow-y: auto;
+    border-radius: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(34, 197, 94, 0.3) transparent;
+}
+
+.table-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+    background: rgba(34, 197, 94, 0.3);
+    border-radius: 4px;
+}
+
+.table-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: rgba(5, 14, 26, 0.97);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
 /* ── SCORE BADGE ── */
 .score-badge {
     background: rgba(5, 14, 26, 0.9);
@@ -275,6 +306,7 @@ tr:hover td {
 .player-controls {
     display: none;
 }
+
 /* ── LOADER BALÓN ── */
 .ball-loader {
     display: none;
@@ -341,6 +373,58 @@ button:active {
     box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
 }
 
+/* ── NAVEGACIÓN PARTIDOS ── */
+.match-nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#matchSelect {
+    flex: 1;
+    background: rgba(5, 14, 26, 0.9);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #facc15;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    min-width: 0;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.1);
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#matchSelect:focus {
+    border-color: rgba(34, 197, 94, 0.7);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.25);
+}
+
+#matchSelect option {
+    background: #050e1a;
+    color: #e2e8f0;
+    font-weight: 400;
+}
+
+.match-counter {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #334155;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+/* ── ANIMACIÓN MATCH CARD ── */
+#matchCard {
+    overflow: hidden;
+}
+
 /* ── INTRO ── */
 .intro-overlay {
     position: fixed;
@@ -371,25 +455,10 @@ button:active {
 }
 
 @keyframes imgExplode {
-    0%   {
-        transform: scale(1) rotate(0deg);
-        opacity: 1;
-        filter: brightness(1);
-    }
-    40%  {
-        transform: scale(1.15) rotate(2deg);
-        filter: brightness(2) saturate(2);
-    }
-    70%  {
-        transform: scale(0.6) rotate(-8deg);
-        opacity: 0.6;
-        filter: brightness(3) saturate(3) blur(2px);
-    }
-    100% {
-        transform: scale(3) rotate(12deg);
-        opacity: 0;
-        filter: brightness(4) blur(20px);
-    }
+    0%   { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+    40%  { transform: scale(1.15) rotate(2deg); filter: brightness(2) saturate(2); }
+    70%  { transform: scale(0.6) rotate(-8deg); opacity: 0.6; filter: brightness(3) saturate(3) blur(2px); }
+    100% { transform: scale(3) rotate(12deg); opacity: 0; filter: brightness(4) blur(20px); }
 }
 
 .intro-content {
@@ -500,148 +569,99 @@ button:active {
     50%       { box-shadow: 0 0 32px rgba(34,197,94,0.7), 0 4px 20px rgba(0,0,0,0.4); }
 }
 
-/* ── RESPONSIVE DESKTOP ── */
-@media (min-width: 900px) {
-
-    body { padding: 32px 20px; }
-
-    .container { max-width: 860px; }
-
-    h1 { font-size: 68px; letter-spacing: 5px; }
-
-    .subtitle { font-size: 14px; letter-spacing: 7px; margin-bottom: 28px; }
-
-    .card { padding: 28px 32px; border-radius: 24px; margin-bottom: 24px; }
-
-    h2 { font-size: 24px; letter-spacing: 4px; margin-bottom: 20px; }
-
-    th { font-size: 13px; padding: 13px 16px; letter-spacing: 2px; }
-
-    td { font-size: 16px; padding: 13px 16px; }
-
-    .score-badge { font-size: 15px; padding: 4px 14px; border-radius: 8px; }
-
-    .player-photo { width: 560px; }
-
-    #playerName { font-size: 42px; letter-spacing: 6px; }
-
-    .player-stars { font-size: 14px; letter-spacing: 6px; margin-top: 8px; }
-
-    .player-card { gap: 40px; }
-
-    button {
-        width: 56px;
-        height: 56px;
-        min-width: 56px;
-        font-size: 22px;
-    }
-
-    .ball { font-size: 72px; }
-
-    .exact, .winner, .fail { font-size: 20px; }
+/* ── RACHAS ── */
+.racha-hot {
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 4px;
+    animation: hotPulse 1.2s ease-in-out infinite;
+}
+.racha-ok {
+    font-size: 13px;
+    color: #facc15;
+    margin-left: 4px;
+}
+.racha-cold {
+    font-size: 13px;
+    opacity: 0.4;
+    margin-left: 4px;
 }
 
-/* ── RESPONSIVE TABLET ── */
-@media (min-width: 600px) and (max-width: 899px) {
-
-    body { padding: 24px 20px; }
-
-    .container { max-width: 680px; }
-
-    h1 { font-size: 52px; }
-
-    .subtitle { font-size: 13px; }
-
-    .card { padding: 22px 26px; }
-
-    h2 { font-size: 20px; }
-
-    th { font-size: 12px; padding: 11px 14px; }
-
-    td { font-size: 15px; padding: 12px 14px; }
-
-    .score-badge { font-size: 14px; padding: 3px 12px; }
-
-    .player-photo { width: 360px; }
-
-    #playerName { font-size: 34px; }
-
-    button {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        font-size: 20px;
-    }
-
-    .ball { font-size: 52px; }
-
-    .exact, .winner, .fail { font-size: 18px; }
+@keyframes hotPulse {
+    0%, 100% { filter: drop-shadow(0 0 3px rgba(251,146,60,0.6)); }
+    50%       { filter: drop-shadow(0 0 8px rgba(251,146,60,1));   }
 }
 
-/* Ranking */
-
+/* ── TREND ── */
 .trend-up   { color: #22c55e; font-weight: 700; font-size: 13px; text-shadow: 0 0 8px rgba(34,197,94,0.8); }
 .trend-down { color: #ef4444; font-weight: 700; font-size: 13px; text-shadow: 0 0 8px rgba(239,68,68,0.8); }
 .trend-same { color: #475569; font-size: 13px; }
 
+/* ── RESPONSIVE DESKTOP ── */
+@media (min-width: 900px) {
+    body { padding: 32px 20px; }
+    .container { max-width: 860px; }
+    h1 { font-size: 68px; letter-spacing: 5px; }
+    .subtitle { font-size: 14px; letter-spacing: 7px; margin-bottom: 28px; }
+    .card { padding: 28px 32px; border-radius: 24px; margin-bottom: 24px; }
+    h2 { font-size: 24px; letter-spacing: 4px; margin-bottom: 20px; }
+    th { font-size: 13px; padding: 13px 16px; letter-spacing: 2px; }
+    td { font-size: 16px; padding: 13px 16px; }
+    .score-badge { font-size: 15px; padding: 4px 14px; border-radius: 8px; }
+    .player-photo { width: 560px; }
+    #playerName { font-size: 42px; letter-spacing: 6px; }
+    .player-stars { font-size: 14px; letter-spacing: 6px; margin-top: 8px; }
+    button { width: 56px; height: 56px; min-width: 56px; font-size: 22px; }
+    .ball { font-size: 72px; }
+    .exact, .winner, .fail { font-size: 20px; }
+    #matchSelect { font-size: 15px; padding: 11px 16px; }
+}
+
+/* ── RESPONSIVE TABLET ── */
+@media (min-width: 600px) and (max-width: 899px) {
+    body { padding: 24px 20px; }
+    .container { max-width: 680px; }
+    h1 { font-size: 52px; }
+    .subtitle { font-size: 13px; }
+    .card { padding: 22px 26px; }
+    h2 { font-size: 20px; }
+    th { font-size: 12px; padding: 11px 14px; }
+    td { font-size: 15px; padding: 12px 14px; }
+    .score-badge { font-size: 14px; padding: 3px 12px; }
+    .player-photo { width: 360px; }
+    #playerName { font-size: 34px; }
+    button { width: 50px; height: 50px; min-width: 50px; font-size: 20px; }
+    .ball { font-size: 52px; }
+    .exact, .winner, .fail { font-size: 18px; }
+}
+
 /* ── RESPONSIVE MOBILE ── */
 @media (max-width: 599px) {
-
     body { padding: 12px; }
-
-    h1 {
-        font-size: clamp(22px, 6vw, 32px);
-        letter-spacing: 1px;
-    }
-
-    .subtitle {
-        font-size: 10px;
-        letter-spacing: 3px;
-        margin-bottom: 16px;
-    }
-
+    h1 { font-size: clamp(22px, 6vw, 32px); letter-spacing: 1px; }
+    .subtitle { font-size: 10px; letter-spacing: 3px; margin-bottom: 16px; }
     .card { padding: 16px; border-radius: 16px; margin-bottom: 12px; }
-
     h2 { font-size: 18px; letter-spacing: 2px; margin-bottom: 14px; }
-
     th { font-size: 12px; padding: 10px 6px; letter-spacing: 0px; }
-
     td { font-size: 14px; padding: 11px 6px; }
-
     .score-badge { font-size: 13px; padding: 3px 6px; }
-
     .player-photo { width: 100%; max-width: 100%; }
-
     #playerName { font-size: 30px; letter-spacing: 3px; }
-
     .ball { font-size: 44px; }
-
     .exact, .winner, .fail { font-size: 16px; }
-
-    .player-name-row {
-        gap: 12px;
-    }
-
-    button {
-        width: 44px;
-        height: 44px;
-        min-width: 44px;
-        font-size: 18px;
-    }
+    .player-name-row { gap: 12px; }
+    button { width: 44px; height: 44px; min-width: 44px; font-size: 18px; }
+    #matchSelect { font-size: 13px; padding: 9px 10px; }
+    .table-scroll { max-height: 340px; }
 }
 
 /* ── RESPONSIVE MOBILE PEQUEÑO ── */
 @media (max-width: 360px) {
-
     td { font-size: 13px; padding: 10px 6px; }
-
     th { font-size: 11px; padding: 9px 6px; }
-
     .score-badge { font-size: 12px; }
-
     .player-photo { width: 220px; }
-
     button { width: 40px; height: 40px; min-width: 40px; }
-
     #playerName { font-size: 26px; }
+    #matchSelect { font-size: 12px; padding: 8px 8px; }
 }
