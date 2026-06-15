@@ -353,8 +353,8 @@ function renderMatchView() {
     const sel = document.getElementById("matchSelect");
         if (sel) sel.value = currentMatchIndex;
 
-    document.getElementById("matchLabel").textContent =
-        `${local} vs ${visit}`;
+    //document.getElementById("matchLabel").textContent =
+    //    `${local} vs ${visit}`;
 
     document.getElementById("matchCounter").textContent =
         `Partido ${currentMatchIndex + 1} / ${total}`;
