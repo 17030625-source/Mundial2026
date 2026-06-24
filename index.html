@@ -4,123 +4,183 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiniela Mundial 2026</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <!-- Fonts (mejor aquí que dentro del body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<!-- INTRO -->
+<!-- ================= INTRO ================= -->
 <div id="intro" class="intro-overlay">
     <div class="intro-content">
-        <img
-            src="https://lh3.googleusercontent.com/d/1ovRDsmVA7jppfljQP1THIirhKel7PeTm"
-            alt="Quiniela Mundial 2026"
-            class="intro-img"
-        />
-        <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+        <img src="https://lh3.googleusercontent.com/d/1ovRDsmVA7jppfljQP1THIirhKel7PeTm" class="intro-img"/>
+
+        <div class="intro-bar">
+            <div class="intro-bar-fill"></div>
+        </div>
+
         <p class="intro-tap">Toca para continuar</p>
     </div>
 </div>
 
-<!-- MÚSICA -->
+<!-- AUDIO -->
 <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
-<button id="musicBtn" class="music-btn" title="Música">🔇</button>
+<button id="musicBtn" class="music-btn">🔇</button>
 
+<!-- ================= APP ================= -->
 <div class="container">
 
     <h1>⚽ Quiniela Mundial 2026 ⚽</h1>
     <p class="subtitle">★ México · Canadá · Estados Unidos ★</p>
 
-    <!-- RANKING -->
-    <div class="card">
-        <h2>🏆 Ranking General</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Participante</th>
-                    <th>Puntos</th>
-                    <th>↕</th>
-                </tr>
-            </thead>
-            <tbody id="rankingBody"></tbody>
-        </table>
+    <!-- ================= TABS ================= -->
+    <div class="tabs">
+        <button class="tab active" onclick="setPhase(1, event)">FASE 1</button>
+        <button class="tab" onclick="setPhase(2, event)">🔒 FASE 2 🔒</button>
     </div>
 
-    <!-- JUGADOR -->
-    <div class="card">
-        <div class="player-info">
-            <div class="player-photo-wrap">
-                <div class="ball-loader" id="ballLoader">
-                    <span class="ball">⚽</span>
-                </div>
-                <img id="playerPhoto" class="player-photo" alt="Participante">
-            </div>
+    <!-- ================= FASE 1 ================= -->
+    <div id="fase1">
 
-            <div class="player-name-row">
-                <button id="prevBtn">◀</button>
-                <div id="playerName"></div>
-                <button id="nextBtn">▶</button>
-            </div>
-
-            <div class="player-stars">★ ★ ★ ★ ★</div>
-        </div>
-    </div>
-
-    <!-- PRONÓSTICOS -->
-    <div class="card">
-        <h2>📋 Pronósticos</h2>
-        <div class="table-scroll">
+        <!-- RANKING -->
+        <div class="card">
+            <h2>🏆 Ranking General</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Partido</th>
-                        <th>Real</th>
-                        <th>Pronóstico</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="predictionBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- VISTA POR PARTIDO -->
-    <div class="card">
-        <h2>🔍 Vista por Partido</h2>
-
-        <!-- Selector + flechas -->
-        <div class="match-nav">
-            <button id="prevMatchBtn">◀</button>
-            <select id="matchSelect"></select>
-            <button id="nextMatchBtn">▶</button>
-        </div>
-
-        <!-- Contador -->
-        <div id="matchCounter" class="match-counter"></div>
-
-        <!-- Nombre del partido -->
-        <div id="matchLabel" class="match-label"></div>
-        
-        <!-- Tabla animada -->
-        <div id="matchCard">
-            <table>
-                <thead>
-                    <tr>
+                        <th>#</th>
                         <th>Participante</th>
-                        <th>Pronóstico</th>
-                        <th>Real</th>
-                        <th>Estado</th>
+                        <th>Puntos</th>
+                        <th>↕</th>
                     </tr>
                 </thead>
-                <tbody id="matchBody"></tbody>
+                <tbody id="rankingBody"></tbody>
             </table>
         </div>
+
+        <!-- PLAYER -->
+        <div class="card">
+
+            <div class="player-info">
+
+                <div class="player-photo-wrap">
+                    <div class="ball-loader" id="ballLoader">
+                        <span class="ball">⚽</span>
+                    </div>
+                    <img id="playerPhoto" class="player-photo" />
+                </div>
+
+                <div class="player-name-row">
+                    <button id="prevBtn">◀</button>
+                    <div id="playerName"></div>
+                    <button id="nextBtn">▶</button>
+                </div>
+
+                <div class="player-stars">★★★★★</div>
+            </div>
+
+            <h2>📋 Pronósticos</h2>
+
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Partido</th>
+                            <th>Real</th>
+                            <th>Pronóstico</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="predictionBody"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- MATCH VIEW -->
+        <div class="card">
+
+            <h2>🔍 Vista por Partido</h2>
+
+            <div class="match-nav">
+                <button id="prevMatchBtn">◀</button>
+                <select id="matchSelect"></select>
+                <button id="nextMatchBtn">▶</button>
+            </div>
+
+            <div id="matchCounter" class="match-counter"></div>
+
+            <div id="matchCard">
+
+                <div id="matchLabel" class="match-label"></div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Participante</th>
+                            <th>Pronóstico</th>
+                            <th>Real</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matchBody"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= FASE 2 ================= -->
+    <div id="fase2" style="display:none;">
+
+        <h2>🏆 Bracket Eliminatoria</h2>
+
+        <div class="bracket-outer">
+
+            <!-- LIVE BANNER -->
+            <div id="liveBanner" class="live-banner">
+
+                <div class="live-left">
+                    <div class="live-ball">⚽</div>
+
+                    <div class="live-text">
+                        <div class="live-title">EN VIVO PRÓXIMAMENTE</div>
+
+                        <div class="live-countdown">
+                            <span id="countdown">Calculando...</span>
+                            <span class="clock">⏳</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="live-btn live-pulse"
+                   href="https://us02web.zoom.us/j/XXXXXXXXXX"
+                   target="_blank">
+                    🔴 UNIRSE A ZOOM
+                </a>
+
+            </div>
+
+            <!-- BRACKET -->
+            <div id="bracketContainer"></div>
+
+        </div>
+
     </div>
 
 </div>
 
+<!-- ================= SCRIPTS ================= -->
+
+
 <script src="app.js"></script>
+
 </body>
 </html>
