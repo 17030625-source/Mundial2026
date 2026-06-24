@@ -91,7 +91,7 @@ function setPhase(phase, e) {
     if (phase === 2) renderBrackets();
 }*/
 
-const PHASE2_PASSWORD = "2026";
+const PHASE2_PASSWORD = "2026180998";
 function setPhase(phase, e) {
     currentPhase = phase;
 
