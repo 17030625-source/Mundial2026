@@ -91,7 +91,7 @@ function setPhase(phase, e) {
     if (phase === 2) renderBrackets();
 }*/
 
-const PHASE2_PASSWORD = "2026180998";
+const PHASE2_PASSWORD = "2026081809";
 function setPhase(phase, e) {
     currentPhase = phase;
 
@@ -966,8 +966,6 @@ document.addEventListener("DOMContentLoaded",()=>{
     setupButtons();
     startCountdown();
     setInterval(loadGoogleSheet,30000);
+ 
 
- // 🔒 BLOQUEO VISUAL DE FASE 2
-    document.getElementById("fase2").classList.add("locked");
-    
 });

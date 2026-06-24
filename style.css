@@ -1454,6 +1454,7 @@ button:active {
 ========================= */
 
 .live-banner{
+    margin-bottom: 18px;
     position: relative;
     display: flex;
     align-items: center;
@@ -1810,35 +1811,3 @@ button:active {
     background: rgba(34,197,94,0.35);
 }
 
-
-/* quitar */
-#fase2.locked {
-    position: relative;
-}
-
-/* Capa gris encima de TODO */
-#fase2.locked::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(20, 20, 20, 0.75);
-    z-index: 999;
-    pointer-events: none;
-}
-
-/* Candado centrado */
-#fase2.locked::after {
-    content: "🔒 FASE 2 BLOQUEADA";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-
-    background: rgba(0,0,0,0.85);
-    color: white;
-    padding: 14px 18px;
-    border-radius: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
