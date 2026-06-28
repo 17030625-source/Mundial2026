@@ -72,7 +72,7 @@ function getStatus(rawL,rawV,rL,rV,pL,pV){
    TABS
 ========================= */
 
-/*
+
 function setPhase(phase, e) {
     currentPhase = phase;
 
@@ -89,8 +89,9 @@ function setPhase(phase, e) {
     document.getElementById("fase2").style.display = phase === 2 ? "block" : "none";
 
     if (phase === 2) renderBrackets();
-}*/
+}
 
+/*
 const PHASE2_PASSWORD = "2026081809";
 function setPhase(phase, e) {
     currentPhase = phase;
@@ -119,7 +120,7 @@ function setPhase(phase, e) {
     document.getElementById("fase2").style.display = phase === 2 ? "block" : "none";
 
     if (phase === 2) renderBrackets();
-}
+}*/
 
 
 /* =========================
